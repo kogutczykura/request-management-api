@@ -10,3 +10,7 @@ The easiest way to run this application is to install docker and run `docker-com
 ### Rest endpoints
 
 In order to see available rest endpoints access `http://localhost:8081` after running in docker.
+
+### Shortcuts
+- database schema is generated using hibernate. In production application flyway/liquibase should be used
+- better way to store history changes would be to use event sourcing because current implementation require fetching all status changes along with request
