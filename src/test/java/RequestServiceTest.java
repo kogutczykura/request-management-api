@@ -1,4 +1,9 @@
-import com.application.*;
+import com.application.data.Request;
+import com.application.data.RequestDto;
+import com.application.data.RequestState;
+import com.application.exception.ServiceValidationException;
+import com.application.repository.RequestRepository;
+import com.application.service.RequestService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -88,7 +93,6 @@ public class RequestServiceTest {
         assertThat(ex.getErrors().get(0).getField()).isEqualTo("value");
     }
 
-
     @Test
     public void updateRequestWithStatusVerifiedAndReasonRejected() {
         // Given
@@ -111,6 +115,33 @@ public class RequestServiceTest {
 
         assertThat(ex.getErrors().get(0).getField()).isEqualTo("reasonRejection");
     }
+
+    @Test
+    public void removeRequestWithReason() {
+        // Given
+        RequestDto requestDto = prepare();
+        requestDto.setState(RequestState.DELETED);
+        requestDto.setValue(null);
+        requestDto.setName(null);
+        BindingResult bindingResult = new BeanPropertyBindingResult(requestDto, "requestDto");
+        Request requestReturnedFromRepo =  Request.builder()
+                .name("dasdas")
+                .value("rerereerrerer")
+                .id(1L)
+                .state(RequestState.CREATED)
+                .build();
+
+        when(requestRepository.getById(requestDto.getId())).thenReturn(requestReturnedFromRepo);
+
+        // When
+        RequestDto updatedRequest = requestService.update(requestDto, bindingResult);
+
+        // Then
+        assertThat(updatedRequest.getState()).isEqualTo(RequestState.DELETED);
+        assertThat(updatedRequest.getReasonRejection()).isNotEmpty();
+        assertThat(updatedRequest.getValue()).isEqualTo("rerereerrerer");
+    }
+
 
 
     private RequestDto prepare(){

@@ -1,4 +1,4 @@
-package com.application;
+package com.application.data;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,4 +13,5 @@ public class RequestDto {
     private String value;
     private RequestState state;
     private String reasonRejection;
+    private Long publishedNumber;
 }
